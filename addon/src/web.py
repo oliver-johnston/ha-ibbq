@@ -68,6 +68,13 @@ class WebServer:
         sessions = self._db.list_sessions()
         return web.json_response(sessions)
 
+    async def handle_readings_session(self, request):
+        session = self._db.get_active_session()
+        if session is None:
+            return web.json_response([])
+        readings = self._db.get_readings(session["id"])
+        return web.json_response(readings)
+
     async def handle_readings_recent(self, request):
         session = self._db.get_active_session()
         if session is None:
@@ -192,6 +199,7 @@ class WebServer:
         app.router.add_post("/api/session/start", self.handle_session_start)
         app.router.add_post("/api/session/end", self.handle_session_end)
         app.router.add_get("/api/sessions", self.handle_sessions_list)
+        app.router.add_get("/api/readings/session", self.handle_readings_session)
         app.router.add_get("/api/readings/recent", self.handle_readings_recent)
         app.router.add_get("/api/sessions/{id}", self.handle_session_detail)
 

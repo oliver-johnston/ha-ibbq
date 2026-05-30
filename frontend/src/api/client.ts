@@ -122,6 +122,7 @@ export const api = {
     post<{ ok: boolean }>(`/probe/${probe}/config`, config),
   clearProbeConfig: (probe: number) => del<{ ok: boolean }>(`/probe/${probe}/config`),
 
+  getSessionReadings: () => get<Reading[]>('/readings/session'),
   getRecentReadings: (minutes = 10) => get<Reading[]>(`/readings/recent?minutes=${minutes}`),
 
   getSettings: () => get<SettingsData>('/settings'),

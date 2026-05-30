@@ -203,6 +203,8 @@ export const ProbeCard: React.FC<Props> = ({ probe, unit, presets, rangePresets,
 
       {/* Mini chart */}
       <MiniChart
+        probe={probe.probe}
+        label={label}
         readings={probeReadings}
         targetF={mode === 'setpoint' ? config.target_temp_f : undefined}
         minF={mode === 'range' ? config.min_temp_f : undefined}
