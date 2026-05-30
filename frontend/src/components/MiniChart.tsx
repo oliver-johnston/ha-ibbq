@@ -211,6 +211,8 @@ interface ModalProps {
 
 const ChartModal: React.FC<ModalProps> = ({ probe, label, targetF, minF, maxF, unit, onClose }) => {
   const [allReadings, setAllReadings] = useState<{ ts: number; val: number }[] | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [chartSize, setChartSize] = useState<{ w: number; h: number }>({ w: 800, h: 400 })
 
   useEffect(() => {
     api.getSessionReadings().then(readings => {
@@ -221,13 +223,25 @@ const ChartModal: React.FC<ModalProps> = ({ probe, label, targetF, minF, maxF, u
     }).catch(() => setAllReadings([]))
   }, [probe, unit])
 
+  useEffect(() => {
+    const measure = () => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect()
+        setChartSize({ w: Math.round(rect.width), h: Math.round(rect.height) })
+      }
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [])
+
   return (
     <div
       onClick={onClose}
       style={{
         position: 'fixed', inset: 0, zIndex: 1000,
-        background: 'rgba(0,0,0,0.75)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: 'rgba(0,0,0,0.8)',
+        display: 'flex', flexDirection: 'column',
         padding: 16,
       }}
     >
@@ -238,50 +252,54 @@ const ChartModal: React.FC<ModalProps> = ({ probe, label, targetF, minF, maxF, u
           border: '1px solid var(--line-2)',
           borderRadius: 16,
           padding: 20,
-          width: '100%',
-          maxWidth: 700,
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-          <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--fg-0)' }}>{label}</span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, flexShrink: 0 }}>
+          <span style={{ fontSize: 16, fontWeight: 600, color: 'var(--fg-0)' }}>{label}</span>
           <button
             onClick={onClose}
             className="tap"
             style={{
               background: 'var(--bg-3)', border: '1px solid var(--line-2)',
-              borderRadius: 8, color: 'var(--fg-2)', fontSize: 11, fontWeight: 600,
-              padding: '4px 12px',
+              borderRadius: 8, color: 'var(--fg-2)', fontSize: 12, fontWeight: 600,
+              padding: '6px 16px',
             }}
           >
             Close
           </button>
         </div>
 
-        {allReadings === null && (
-          <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--fg-3)', fontSize: 12 }}>
-            Loading...
-          </div>
-        )}
+        <div ref={containerRef} style={{ flex: 1, minHeight: 0 }}>
+          {allReadings === null && (
+            <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--fg-3)', fontSize: 13 }}>
+              Loading...
+            </div>
+          )}
 
-        {allReadings != null && allReadings.length < 2 && (
-          <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--fg-3)', fontSize: 12 }}>
-            Not enough data yet
-          </div>
-        )}
+          {allReadings != null && allReadings.length < 2 && (
+            <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--fg-3)', fontSize: 13 }}>
+              Not enough data yet
+            </div>
+          )}
 
-        {allReadings != null && allReadings.length >= 2 && (
-          <ChartSVG
-            readings={allReadings}
-            targetF={targetF}
-            minF={minF}
-            maxF={maxF}
-            unit={unit}
-            w={660}
-            h={280}
-            pad={{ l: 42, r: 16, t: 16, b: 28 }}
-            yTickCount={6}
-          />
-        )}
+          {allReadings != null && allReadings.length >= 2 && (
+            <ChartSVG
+              readings={allReadings}
+              targetF={targetF}
+              minF={minF}
+              maxF={maxF}
+              unit={unit}
+              w={chartSize.w}
+              h={chartSize.h}
+              pad={{ l: 48, r: 20, t: 20, b: 32 }}
+              yTickCount={8}
+            />
+          )}
+        </div>
       </div>
     </div>
   )
