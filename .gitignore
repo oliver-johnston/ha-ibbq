@@ -1,6 +1,5 @@
 .featurefactory/
 node_modules/
-addon/src/static/dist/
 __pycache__/
 *.pyc
 .pytest_cache/
