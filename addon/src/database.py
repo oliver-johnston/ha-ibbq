@@ -85,6 +85,25 @@ class Database:
                 );
             """)
 
+            defaults = {
+                "unit": "F",
+                "poll_interval": "5",
+                "notification_repeat_seconds": "300",
+                "notifications_enabled": "true",
+                "signal_lost_seconds": "300",
+                "discord_notify_entity": "notify.robeson_chat",
+                "discord_alerts_channel_id": "1483226515461115954",
+                "probe_entity_1": "sensor.ibbq_4t_probe_1",
+                "probe_entity_2": "sensor.ibbq_4t_probe_2",
+                "probe_entity_3": "sensor.ibbq_4t_probe_3",
+                "probe_entity_4": "sensor.ibbq_4t_probe_4",
+            }
+            for key, value in defaults.items():
+                conn.execute(
+                    "INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)",
+                    (key, value),
+                )
+
     def list_tables(self) -> list:
         with self._connect() as conn:
             rows = conn.execute(

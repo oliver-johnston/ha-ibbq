@@ -46,6 +46,7 @@ async def test_send_strips_notify_prefix(db, ha):
 @pytest.mark.asyncio
 async def test_send_no_entity_configured(db, ha):
     """No entity in settings -> call_service not called."""
+    db.set_setting("discord_notify_entity", "")
     notifier = Notifier(ha=ha, db=db)
     await notifier.send("Should be dropped")
 
@@ -56,6 +57,7 @@ async def test_send_no_entity_configured(db, ha):
 async def test_send_no_channel(db, ha):
     """Entity set but no channel -> data has no 'target' key."""
     db.set_setting("discord_notify_entity", "robeson_chat")
+    db.set_setting("discord_alerts_channel_id", "")
 
     notifier = Notifier(ha=ha, db=db)
     await notifier.send("No channel message")

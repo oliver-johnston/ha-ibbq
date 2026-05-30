@@ -353,3 +353,22 @@ def test_transaction_context_manager(db):
     except ValueError:
         pass
     assert db.get_setting("rollback_key") == ""
+
+
+def test_default_settings(db):
+    """Default settings are populated on schema init."""
+    assert db.get_setting("unit") == "F"
+    assert db.get_setting("poll_interval") == "5"
+    assert db.get_setting("notification_repeat_seconds") == "300"
+    assert db.get_setting("notifications_enabled") == "true"
+    assert db.get_setting("signal_lost_seconds") == "300"
+    assert db.get_setting("discord_notify_entity") == "notify.robeson_chat"
+    assert db.get_setting("probe_entity_1") == "sensor.ibbq_4t_probe_1"
+    assert db.get_setting("probe_entity_4") == "sensor.ibbq_4t_probe_4"
+
+
+def test_default_settings_not_overwritten(db):
+    """User-set values survive re-init."""
+    db.set_setting("unit", "C")
+    db.init_schema()
+    assert db.get_setting("unit") == "C"
