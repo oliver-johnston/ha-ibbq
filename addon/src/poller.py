@@ -153,11 +153,11 @@ class Poller:
             return True
         return (now - last) >= repeat_sec
 
-    async def run_loop(self, interval: int = 5):
-        """Run forever, polling every `interval` seconds."""
+    async def run_loop(self, interval=5):
         while True:
             try:
                 await self.poll()
             except Exception:
                 log.exception("Error in poll cycle")
-            await asyncio.sleep(interval)
+            delay = interval() if callable(interval) else interval
+            await asyncio.sleep(int(delay))
