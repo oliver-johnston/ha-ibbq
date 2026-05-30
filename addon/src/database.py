@@ -259,6 +259,16 @@ class Database:
                 (session_id, ts, probe, temp_f),
             )
 
+    def get_recent_readings(self, session_id: int, since_ts: float) -> list:
+        with self._connect() as conn:
+            rows = conn.execute(
+                "SELECT * FROM readings "
+                "WHERE session_id=? AND timestamp>=? "
+                "ORDER BY timestamp",
+                (session_id, since_ts),
+            ).fetchall()
+            return [dict(r) for r in rows]
+
     def get_readings(self, session_id: int, probe: int = None) -> list:
         with self._connect() as conn:
             if probe is not None:

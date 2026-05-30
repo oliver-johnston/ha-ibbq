@@ -3,7 +3,7 @@ import { TabBar, TabId } from './components/TabBar'
 import { DashboardScreen } from './screens/Dashboard'
 import { PresetsScreen } from './screens/Presets'
 import { SettingsScreen } from './screens/Settings'
-import { api, DashboardData, Preset, RangePreset, SettingsData } from './api/client'
+import { api, DashboardData, Preset, RangePreset, Reading, SettingsData } from './api/client'
 
 const POLL_MS = 5000
 
@@ -13,6 +13,7 @@ export const App: React.FC = () => {
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null)
   const [presets, setPresets] = useState<Preset[]>([])
   const [rangePresets, setRangePresets] = useState<RangePreset[]>([])
+  const [readings, setReadings] = useState<Reading[]>([])
   const [settings, setSettings] = useState<SettingsData | null>(null)
 
   const unit = settings?.unit || 'F'
@@ -21,14 +22,16 @@ export const App: React.FC = () => {
     try {
       switch (tab) {
         case 'dashboard': {
-          const [d, p, rp] = await Promise.all([
+          const [d, p, rp, rd] = await Promise.all([
             api.dashboard(),
             api.listPresets(),
             api.listRangePresets(),
+            api.getRecentReadings(10),
           ])
           setDashboardData(d)
           setPresets(p)
           setRangePresets(rp)
+          setReadings(rd)
           break
         }
         case 'presets': {
@@ -74,6 +77,7 @@ export const App: React.FC = () => {
               data={dashboardData}
               presets={presets}
               rangePresets={rangePresets}
+              readings={readings}
               unit={unit}
               onRefresh={load}
             />

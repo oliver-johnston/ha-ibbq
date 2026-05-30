@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { DashboardData, Preset, RangePreset, Session, api, Alert } from '../api/client'
+import { DashboardData, Preset, RangePreset, Reading, Session, api, Alert } from '../api/client'
 import { SessionBar } from '../components/SessionBar'
 import { ProbeCard } from '../components/ProbeCard'
 import { Card } from '../components/Card'
@@ -11,6 +11,7 @@ interface Props {
   data: DashboardData | null
   presets: Preset[]
   rangePresets: RangePreset[]
+  readings: Reading[]
   unit: string
   onRefresh: () => void
 }
@@ -34,7 +35,7 @@ interface SessionDetail {
   maxTemp: Record<number, number>
 }
 
-export const DashboardScreen: React.FC<Props> = ({ data, presets, rangePresets, unit, onRefresh }) => {
+export const DashboardScreen: React.FC<Props> = ({ data, presets, rangePresets, readings, unit, onRefresh }) => {
   const [sessions, setSessions] = useState<Session[]>([])
   const [expandedId, setExpandedId] = useState<number | null>(null)
   const [details, setDetails] = useState<Record<number, SessionDetail>>({})
@@ -90,6 +91,7 @@ export const DashboardScreen: React.FC<Props> = ({ data, presets, rangePresets, 
             unit={unit}
             presets={presets}
             rangePresets={rangePresets}
+            readings={readings}
             onConfigChange={onRefresh}
           />
         ))}
