@@ -102,7 +102,7 @@ export const api = {
 
   startSession: () => post<{ ok: boolean; session_id: number }>('/session/start'),
   endSession: () => post<{ ok: boolean }>('/session/end'),
-  listSessions: () => get<{ sessions: Session[] }>('/sessions'),
+  listSessions: () => get<Session[]>('/sessions'),
   getSession: (id: number) =>
     get<{ session: Session; readings: Reading[]; alerts: Alert[] }>(`/sessions/${id}`),
 

@@ -40,7 +40,7 @@ export const DashboardScreen: React.FC<Props> = ({ data, presets, rangePresets, 
   const [details, setDetails] = useState<Record<number, SessionDetail>>({})
 
   useEffect(() => {
-    api.listSessions().then(r => setSessions(r.sessions)).catch(() => {})
+    api.listSessions().then(r => setSessions(r)).catch(() => {})
   }, [data])
 
   const handleExpand = async (id: number) => {
