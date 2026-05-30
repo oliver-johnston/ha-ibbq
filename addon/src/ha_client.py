@@ -39,10 +39,10 @@ class HAClient:
             log.warning("call_service %s/%s failed: %s", domain, service, e)
 
     async def get_probe_temps(self, entity_ids: List[str]) -> List[dict]:
-        """Fetch state for each probe entity, apply 0.01 scaling.
+        """Fetch current temperature for each probe entity.
 
-        LocalTuya entities report raw integer values that need 0.01 scaling
-        (e.g. raw 22500 = 225.0 degF).
+        LocalTuya handles scaling internally, so HA entity state is already
+        in the configured unit (°F).
 
         Returns list of:
             {"entity_id": str, "temp_f": float|None,
@@ -61,8 +61,7 @@ class HAClient:
                 continue
 
             try:
-                raw_value = float(state["state"])
-                temp_f = raw_value * 0.01
+                temp_f = float(state["state"])
                 results.append({
                     "entity_id": entity_id,
                     "temp_f": temp_f,

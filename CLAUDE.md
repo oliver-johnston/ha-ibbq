@@ -31,4 +31,4 @@ Output goes to `addon/src/static/dist/`. The web server serves this directory.
 - **Entry point**: `addon/src/main.py` → `python -m src.main`
 - **Database**: `/data/bbq.db` (SQLite) — settings, presets, sessions, readings, alerts, probe config.
 - **Notifications**: Discord via HA `notify.robeson_chat` service.
-- **Probes**: 4x Inkbird iBBQ-4T via LocalTuya (sensor.ibbq_4t_probe_1..4), raw values scaled by 0.01.
+- **Probes**: 4x Inkbird iBBQ-4T via LocalTuya (sensor.ibbq_4t_probe_1..4). LocalTuya handles scaling internally — HA entity state is already in °F.

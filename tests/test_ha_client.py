@@ -23,7 +23,7 @@ async def test_get_state(client):
     """Mock 200 response, verify JSON parsed."""
     payload = {
         "entity_id": "sensor.probe_1",
-        "state": "22500",
+        "state": "225.0",
         "attributes": {"unit_of_measurement": "°F"},
         "last_updated": "2026-05-30T12:00:00+00:00",
     }
@@ -33,7 +33,7 @@ async def test_get_state(client):
 
     assert result is not None
     assert result["entity_id"] == "sensor.probe_1"
-    assert result["state"] == "22500"
+    assert result["state"] == "225.0"
     assert result["last_updated"] == "2026-05-30T12:00:00+00:00"
 
 
@@ -74,23 +74,23 @@ async def test_call_service(client):
 
 @pytest.mark.asyncio
 async def test_get_probe_temps(client):
-    """Mock 4 probe states with raw values, verify 0.01 scaling and results."""
+    """Mock 4 probe states, verify temps are read directly (no scaling)."""
     entity_ids = [
         "sensor.ibbq_probe_1",
         "sensor.ibbq_probe_2",
         "sensor.ibbq_probe_3",
         "sensor.ibbq_probe_4",
     ]
-    raw_values = [22500, 16500, 19500, 0]
+    state_values = ["225.0", "165.0", "195.0", "0.0"]
     expected_temps = [225.0, 165.0, 195.0, 0.0]
 
     with aioresponses() as m:
-        for eid, raw in zip(entity_ids, raw_values):
+        for eid, sv in zip(entity_ids, state_values):
             m.get(
                 f"{BASE_URL}/api/states/{eid}",
                 payload={
                     "entity_id": eid,
-                    "state": str(raw),
+                    "state": sv,
                     "last_updated": "2026-05-30T12:00:00+00:00",
                 },
             )
