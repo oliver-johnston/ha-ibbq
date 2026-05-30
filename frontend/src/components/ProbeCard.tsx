@@ -120,17 +120,27 @@ export const ProbeCard: React.FC<Props> = ({ probe, unit, presets, rangePresets,
     } catch { /* */ }
   }
 
-  // No config — greyed-out card
+  // No config — show live temp if available, with controls to configure
   if (!hasConfig) {
     return (
-      <Card style={{ opacity: 0.4, padding: 16 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-          <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--fg-2)' }}>Probe {probe.probe}</span>
+      <Card style={{ opacity: isAvailable ? 1 : 0.4, padding: 16 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+          <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--fg-1)' }}>Probe {probe.probe}</span>
         </div>
-        <div className="mono" style={{ fontSize: 28, fontWeight: 700, color: 'var(--fg-3)' }}>
-          --.-&deg;{unit}
+        <div className="mono" style={{ fontSize: 32, fontWeight: 700, color: isAvailable ? 'var(--fg-0)' : 'var(--fg-3)' }}>
+          {tempF != null ? fmt(toDisplay(tempF, unit)) : '--.-'}&deg;{unit}
         </div>
-        <div style={{ fontSize: 11, color: 'var(--fg-3)', marginTop: 8 }}>No Probe</div>
+        <div style={{ fontSize: 11, color: 'var(--fg-3)', marginTop: 4, marginBottom: 10 }}>
+          {isAvailable ? 'No alarm set' : 'No Probe'}
+        </div>
+        <Segmented
+          options={[
+            { value: 'setpoint', label: 'Setpoint' },
+            { value: 'range', label: 'Range' },
+          ]}
+          value=""
+          onChange={handleModeChange}
+        />
       </Card>
     )
   }
