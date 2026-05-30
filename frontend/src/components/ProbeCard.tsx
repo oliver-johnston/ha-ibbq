@@ -131,7 +131,7 @@ export const ProbeCard: React.FC<Props> = ({ probe, unit, presets, rangePresets,
   // No config — show live temp with controls to configure
   if (!hasConfig) {
     return (
-      <Card style={{ opacity: isAvailable ? 1 : 0.4, padding: 16 }}>
+      <Card style={{ opacity: isAvailable ? 0.55 : 0.35, padding: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
           <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--fg-1)' }}>Probe {probe.probe}</span>
         </div>

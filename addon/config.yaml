@@ -1,6 +1,6 @@
 name: "BBQ Monitor"
 description: "Temperature monitoring for Inkbird iBBQ-4T probes"
-version: "0.2.0"
+version: "0.2.1"
 slug: ha_ibbq
 url: "https://github.com/oliverj/ha-ibbq"
 arch:
